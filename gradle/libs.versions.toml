@@ -18,6 +18,7 @@ kotlinx-coroutines = "1.10.2"
 jetbrainsKotlinJvm = "2.2.10"
 google-ksp = "2.2.10-2.0.2"
 build-javaVersion = "VERSION_11"
+compose-navigation = "2.9.0-beta05"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -37,6 +38,7 @@ google-ksp-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.
 jetbrains-compose-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "composeMultiplatform" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 jetbrains-compose-compiler-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+jetbrains-compose-navigation = { module = "org.jetbrains.compose.navigation:navigation-compose", version.ref = "composeMultiplatform" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -29,5 +29,9 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
-include(":feature:feature_home")
+include(
+    ":composeApp",
+    ":feature:feature_home",
+    ":core:navigation-api"
+)
+
