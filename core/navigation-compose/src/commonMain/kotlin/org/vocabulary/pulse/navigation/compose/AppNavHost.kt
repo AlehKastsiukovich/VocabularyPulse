@@ -22,7 +22,7 @@ fun AppNavHost(
         startDestination = startRoute
     ) {
         registry.destinations.forEach { destination ->
-            composable(destination::class) { navBackStackEntry ->
+            composable(destination.route::class) { navBackStackEntry ->
                 destination.Content(destination.route, navigator)
             }
         }
