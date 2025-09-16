@@ -1,5 +1,14 @@
 plugins {
     id("multiplatformConvention")
+    alias(libs.plugins.kotlinxSerialization)
+}
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(projects.core.navigationApi)
+        }
+    }
 }
 
 dependencies {
