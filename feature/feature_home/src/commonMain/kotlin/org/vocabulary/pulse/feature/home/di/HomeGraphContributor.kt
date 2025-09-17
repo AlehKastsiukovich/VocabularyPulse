@@ -23,9 +23,6 @@ object HomeDestination : Destination {
 
     @Composable
     override fun Content(route: AppRoute, navigator: Navigator) {
-        HomeScreen(
-            onStartTrainingClicked = { },
-            onAddWordClicked = { }
-        )
+        HomeScreen()
     }
 }

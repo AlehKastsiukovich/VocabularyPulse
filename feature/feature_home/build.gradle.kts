@@ -7,6 +7,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.navigationApi)
+
+            implementation(libs.viewmodel.compose.lifecycle)
         }
     }
 }
@@ -18,6 +20,3 @@ dependencies {
 android {
     namespace = "com.vocabulary.pulse.feature.home"
 }
-
-
-
