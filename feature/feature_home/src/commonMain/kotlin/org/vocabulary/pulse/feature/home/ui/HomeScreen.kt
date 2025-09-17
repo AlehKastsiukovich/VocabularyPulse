@@ -18,33 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.vocabulary.pulse.navigation.api.AppRoute
-import org.vocabulary.pulse.navigation.api.Destination
-import org.vocabulary.pulse.navigation.api.DestinationRegistry
-import org.vocabulary.pulse.navigation.api.GraphContributor
-import org.vocabulary.pulse.navigation.api.Navigator
-import kotlinx.serialization.Serializable
-
-class HomeGraphContributor : GraphContributor {
-    override fun contribute(into: DestinationRegistry) {
-        into.register(HomeDestination)
-    }
-}
-
-@Serializable
-object HomeRoute : AppRoute
-
-object HomeDestination : Destination {
-    override val route: AppRoute = HomeRoute
-
-    @Composable
-    override fun Content(route: AppRoute, navigator: Navigator) {
-        HomeScreen(
-            onStartTrainingClicked = { },
-            onAddWordClicked = { }
-        )
-    }
-}
 
 @Composable
 fun HomeScreen(

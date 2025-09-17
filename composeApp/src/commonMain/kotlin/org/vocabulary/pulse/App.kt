@@ -3,8 +3,8 @@ package org.vocabulary.pulse
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.vocabulary.pulse.feature.home.ui.HomeGraphContributor
-import org.vocabulary.pulse.feature.home.ui.HomeRoute
+import org.vocabulary.pulse.feature.home.di.HomeGraphContributor
+import org.vocabulary.pulse.feature.home.di.HomeRoute
 import org.vocabulary.pulse.navigation.api.AppRoute
 import org.vocabulary.pulse.navigation.api.GraphContributor
 import org.vocabulary.pulse.navigation.compose.AppNavHost
