@@ -7,6 +7,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.module
 import org.vocabulary.pulse.App
+import org.vocabulary.pulse.feature.home.di.homeScreenModule
 
 @Preview
 @Composable
@@ -19,4 +20,6 @@ fun KoinApp() =
         App()
     }
 
-fun provideAllModules(): List<Module> = listOf()
+fun provideAllModules(): List<Module> = listOf(
+    homeScreenModule
+)

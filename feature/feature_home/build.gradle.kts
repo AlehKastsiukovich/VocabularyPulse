@@ -8,7 +8,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.navigationApi)
 
-            implementation(libs.viewmodel.compose.lifecycle)
+            implementation(libs.koin.viewmodel)
         }
     }
 }

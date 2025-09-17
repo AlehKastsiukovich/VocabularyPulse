@@ -17,12 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = viewModel { HomeScreenViewModel() }
+    viewModel: HomeScreenViewModel = koinViewModel()
 ) {
     HomeScreen({}, {})
 }
@@ -88,4 +88,3 @@ fun HomeScreenPreview() {
         onAddWordClicked = {}
     )
 }
-
