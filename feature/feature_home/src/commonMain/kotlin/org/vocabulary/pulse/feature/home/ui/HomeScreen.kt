@@ -18,9 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
+    viewModel: HomeScreenViewModel = koinViewModel()
+) {
+    HomeScreen({}, {})
+}
+
+@Composable
+private fun HomeScreen(
     onStartTrainingClicked: () -> Unit,
     onAddWordClicked: () -> Unit
 ) {
@@ -80,4 +88,3 @@ fun HomeScreenPreview() {
         onAddWordClicked = {}
     )
 }
-

@@ -54,7 +54,9 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.runtimeSaveable)
             implementation(compose.ui)
+
             implementation(libs.findLibrary("jetbrains-compose-navigation").get())
+            implementation(libs.findLibrary("koin-compose").get())
         }
     }
 }

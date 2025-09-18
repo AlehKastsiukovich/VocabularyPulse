@@ -21,6 +21,8 @@ build-javaVersion = "VERSION_11"
 compose-navigation = "2.9.0-rc01"
 koin-bom = "4.1.1"
 koin-ksp = "2.1.0"
+koin-core = "4.1.0"
+viewmodel-compose = "2.9.4"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -41,11 +43,13 @@ jetbrains-compose-plugin = { module = "org.jetbrains.compose:compose-gradle-plug
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 jetbrains-compose-compiler-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 jetbrains-compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
+viewmodel-compose-lifecycle = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "viewmodel-compose" }
 
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-ksp" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
-koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-core"}
 koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-ksp" }
+koin-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin-core" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
