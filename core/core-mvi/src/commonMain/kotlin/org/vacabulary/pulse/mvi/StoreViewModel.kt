@@ -52,10 +52,7 @@ abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
         }
     }
 
-    override fun dispatchIntent(intent: I) {
-        if (!intentsToProcessFlow.tryEmit(intent)) {
-        }
-    }
+    override fun dispatchIntent(intent: I): Boolean = intentsToProcessFlow.tryEmit(intent)
 
     protected abstract fun handleIntentAndReduce(intent: I): Flow<Unit>
 
