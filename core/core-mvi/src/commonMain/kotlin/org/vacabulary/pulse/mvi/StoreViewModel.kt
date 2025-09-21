@@ -66,14 +66,14 @@ abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
         _uiEffect.send(effect)
     }
 
-    protected fun simpleReduce(
+    protected fun reduceSync(
         processor: S.() -> S
     ): Flow<Unit> = flow {
         reduceState(processor)
         emit(Unit)
     }
 
-    protected fun <R> launchAsyncOperation(
+    protected fun <R> reduceAsync(
         onLoading: ((currentState: S) -> S)? = null,
         operation: suspend () -> Result<R>,
         onSuccess: (currentState: S, result: R) -> S,
