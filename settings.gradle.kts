@@ -33,6 +33,7 @@ include(
     ":composeApp",
     ":feature:feature_home",
     ":core:navigation-api",
-    ":core:navigation-compose"
+    ":core:navigation-compose",
+    ":core:core-mvi"
 )
 
