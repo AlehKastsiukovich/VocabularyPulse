@@ -32,6 +32,7 @@ dependencyResolutionManagement {
 include(
     ":composeApp",
     ":feature:feature_home",
+    ":feature:feature_add_word",
     ":core:navigation-api",
     ":core:navigation-compose",
     ":core:core-mvi"
