@@ -6,4 +6,5 @@ import org.vocabulary.pulse.feature.home.ui.HomeScreenViewModel
 
 val homeScreenModule = module {
     viewModel { HomeScreenViewModel() }
+    single { HomeGraphContributor() }
 }

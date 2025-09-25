@@ -75,6 +75,9 @@ kotlin {
             implementation(projects.core.navigationCompose)
             implementation(projects.core.navigationApi)
             implementation(projects.feature.featureHome)
+            implementation(projects.feature.featureAddWord)
+        }
+        commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))
         }
         commonTest.dependencies {
