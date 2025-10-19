@@ -47,12 +47,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun AddWordScreen(viewModel: AddWordScreenViewModel = koinViewModel()) {
+fun AddWordScreen(
+    onNavigateBack: () -> Unit,
+    viewModel: AddWordScreenViewModel = koinViewModel()
+) {
     AddWordScreen(
-        onNavigateBack = {},
-        onAddWordClicked = { originalWord, translatedWord, example ->
-
-        })
+        onNavigateBack = onNavigateBack,
+        onAddWordClicked = { originalWord, translatedWord, example -> }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

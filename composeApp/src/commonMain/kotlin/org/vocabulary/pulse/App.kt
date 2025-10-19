@@ -9,7 +9,7 @@ import org.vocabulary.pulse.feature.home.di.HomeGraphContributor
 import org.vocabulary.pulse.feature.home.di.HomeRoute
 import org.vocabulary.pulse.navigation.api.AppRoute
 import org.vocabulary.pulse.navigation.api.GraphContributor
-import org.vocabulary.pulse.navigation.compose.AppNavHost
+import org.vocabulary.pulse.navigation.AppNavHost
 import org.vocabulary.pulse.navigation.compose.ComposeDestinationRegistry
 
 @Composable

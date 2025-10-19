@@ -7,7 +7,6 @@ import org.vocabulary.pulse.navigation.api.AppRoute
 import org.vocabulary.pulse.navigation.api.Destination
 import org.vocabulary.pulse.navigation.api.DestinationRegistry
 import org.vocabulary.pulse.navigation.api.GraphContributor
-import org.vocabulary.pulse.navigation.api.Navigator
 
 class AddWordGraphContributor : GraphContributor {
     override fun contribute(into: DestinationRegistry) {
@@ -22,7 +21,7 @@ object AddWordDestination : Destination {
     override val route: AppRoute = AddWordRoute
 
     @Composable
-    override fun Content(route: AppRoute, navigator: Navigator) {
-        AddWordScreen()
+    fun Content(onNavigateBack: () -> Unit) {
+        AddWordScreen(onNavigateBack = onNavigateBack)
     }
 }

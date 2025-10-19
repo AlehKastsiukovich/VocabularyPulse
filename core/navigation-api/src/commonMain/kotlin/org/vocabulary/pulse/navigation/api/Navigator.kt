@@ -1,8 +1,5 @@
 package org.vocabulary.pulse.navigation.api
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-
 interface Navigator {
     fun navigate(navIntent: NavIntent)
     fun canGoBack(): Boolean
@@ -40,15 +37,10 @@ interface DestinationRegistry {
 
 interface Destination {
     val route: AppRoute
-    @Composable
-    fun Content(route: AppRoute, navigator: Navigator)
 }
 
-@Immutable
 data class NavOptions(
     val singleTop: Boolean = false,
     val restoreState: Boolean = true,
     val popUpTo: NavIntent.PopUpTo? = null
 )
-
-

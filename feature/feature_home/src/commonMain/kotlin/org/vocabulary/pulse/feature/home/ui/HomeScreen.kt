@@ -18,19 +18,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = koinViewModel()
+    viewModelProvider: () -> HomeScreenViewModel,
+    onStartTraining: () -> Unit,
+    onAddWord: () -> Unit
 ) {
-    HomeScreen({}, {})
+    val viewModel: HomeScreenViewModel = viewModelProvider()
+    HomeScreenContent(
+        onStartTraining = onStartTraining,
+        onAddWord = onAddWord
+    )
 }
 
 @Composable
-private fun HomeScreen(
-    onStartTrainingClicked: () -> Unit,
-    onAddWordClicked: () -> Unit
+private fun HomeScreenContent(
+    onStartTraining: () -> Unit,
+    onAddWord: () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -56,7 +61,7 @@ private fun HomeScreen(
             )
 
             Button(
-                onClick = onStartTrainingClicked,
+                onClick = onStartTraining,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -68,7 +73,7 @@ private fun HomeScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedButton(
-                onClick = onAddWordClicked,
+                onClick = onAddWord,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -83,8 +88,8 @@ private fun HomeScreen(
 @Composable
 @Preview
 fun HomeScreenPreview() {
-    HomeScreen(
-        onStartTrainingClicked = {},
-        onAddWordClicked = {}
+    HomeScreenContent(
+        onStartTraining = {},
+        onAddWord = {}
     )
 }
