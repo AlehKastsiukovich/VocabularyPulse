@@ -1,4 +1,4 @@
-package org.vocabulary.pulse.feature.add.ui
+package org.vocabulary.pulse.feature.add.presenter.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material.icons.outlined.Language
@@ -30,11 +31,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -45,27 +49,62 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.vocabulary.pulse.feature.add.presenter.model.AddWordEffect
+import org.vocabulary.pulse.feature.add.presenter.model.AddWordIntent
+import org.vocabulary.pulse.feature.add.presenter.model.AddWordState
+import org.vocabulary.pulse.feature.add.presenter.viewmodel.AddWordScreenViewModel
 
 @Composable
-fun AddWordScreen(
+internal fun AddWordScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToHome: () -> Unit,
     viewModel: AddWordScreenViewModel = koinViewModel()
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is AddWordEffect.NavigateBack -> onNavigateBack()
+                is AddWordEffect.NavigateToHome -> onNavigateToHome()
+                is AddWordEffect.Error -> {
+                    // TODO: Show error snackbar or toast
+                }
+            }
+        }
+    }
+
     AddWordScreen(
-        onNavigateBack = onNavigateBack,
-        onAddWordClicked = { originalWord, translatedWord, example -> }
+        state = state,
+        onNavigateBack = { viewModel.dispatchIntent(AddWordIntent.BackClicked) },
+        onWordChanged = { viewModel.dispatchIntent(AddWordIntent.WordChanged(it)) },
+        onTranslationChanged = { viewModel.dispatchIntent(AddWordIntent.TranslationChanged(it)) },
+        onExamplesChanged = { viewModel.dispatchIntent(AddWordIntent.ExampleChanged(it)) },
+        onAddWordClicked = { originalWord, translatedWord, examples ->
+            viewModel.dispatchIntent(
+                AddWordIntent.Submit(
+                    word = originalWord,
+                    translation = translatedWord,
+                    examples = examples
+                )
+            )
+        }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddWordScreen(
-    onNavigateBack: () -> Unit, 
-    onAddWordClicked: (originalWord: String, translatedWord: String, example: String?) -> Unit
+    state: AddWordState,
+    onNavigateBack: () -> Unit,
+    onWordChanged: (String) -> Unit,
+    onTranslationChanged: (String) -> Unit,
+    onExamplesChanged: (List<String>) -> Unit,
+    onAddWordClicked: (originalWord: String, translatedWord: String, examples: List<String>) -> Unit
 ) {
-    var originalWord by remember { mutableStateOf("") }
-    var translatedWord by remember { mutableStateOf("") }
-    var exampleUsage by remember { mutableStateOf("") } 
+    var originalWord by remember { mutableStateOf(state.word) }
+    var translatedWord by remember { mutableStateOf(state.translation) }
+    val examples = remember { mutableStateListOf<String>().apply { addAll(state.examples) } }
 
     val focusManager = LocalFocusManager.current
 
@@ -78,7 +117,10 @@ private fun AddWordScreen(
             CenterAlignedTopAppBar(
                 title = { Text("Новое слово") },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        enabled = !state.isLoading
+                    ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
@@ -102,9 +144,13 @@ private fun AddWordScreen(
         ) {
             WordInputTextField(
                 value = originalWord,
-                onValueChange = { originalWord = it },
+                onValueChange = {
+                    originalWord = it
+                    onWordChanged(it)
+                },
                 label = "Слово или фраза",
                 leadingIconVector = Icons.Outlined.Language,
+                enabled = !state.isLoading,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences,
                     imeAction = ImeAction.Next
@@ -116,9 +162,13 @@ private fun AddWordScreen(
 
             WordInputTextField(
                 value = translatedWord,
-                onValueChange = { translatedWord = it },
+                onValueChange = {
+                    translatedWord = it
+                    onTranslationChanged(it)
+                },
                 label = "Перевод",
                 leadingIconVector = Icons.Filled.Translate,
+                enabled = !state.isLoading,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     capitalization = KeyboardCapitalization.Sentences,
                     imeAction = ImeAction.Next
@@ -128,35 +178,58 @@ private fun AddWordScreen(
                 )
             )
 
-            WordInputTextField(
-                value = exampleUsage,
-                onValueChange = { exampleUsage = it },
-                label = "Пример использования (опционально)",
-                isOptional = true,
-                singleLine = false,
-                minLines = 3,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    capitalization = KeyboardCapitalization.Sentences,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
+            examples.forEachIndexed { index, example ->
+                WordInputTextField(
+                    value = example,
+                    onValueChange = {
+                        examples[index] = it
+                        onExamplesChanged(examples.toList())
+                    },
+                    label = "Пример использования ${index + 1} (опционально)",
+                    isOptional = true,
+                    singleLine = false,
+                    minLines = 3,
+                    enabled = !state.isLoading,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    )
                 )
-            )
+            }
+
+            IconButton(
+                onClick = {
+                    examples.add("")
+                    onExamplesChanged(examples.toList())
+                },
+                enabled = !state.isLoading
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Добавить пример")
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
-                    onAddWordClicked(originalWord.trim(), translatedWord.trim(), exampleUsage.trim().takeIf { it.isNotEmpty() })
+                    onAddWordClicked(
+                        originalWord.trim(),
+                        translatedWord.trim(),
+                        examples.map { it.trim() }.filter { it.isNotEmpty() }
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                enabled = originalWord.isNotBlank() && translatedWord.isNotBlank()
+                enabled = state.isButtonEnabled
             ) {
-                Text("Добавить слово", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    if (state.isLoading) "Добавление..." else "Добавить слово",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     }
@@ -171,6 +244,7 @@ private fun WordInputTextField(
     isOptional: Boolean = false,
     singleLine: Boolean = true,
     minLines: Int = 1,
+    enabled: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
@@ -189,6 +263,7 @@ private fun WordInputTextField(
                 }
             }
         },
+        enabled = enabled,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         singleLine = singleLine,
@@ -203,7 +278,11 @@ private fun WordInputTextField(
 fun AddWordScreenPreview() {
     MaterialTheme {
         AddWordScreen(
+            state = AddWordState(),
             onNavigateBack = {},
+            onWordChanged = {},
+            onTranslationChanged = {},
+            onExamplesChanged = {},
             onAddWordClicked = { _, _, _ -> }
         )
     }
@@ -216,7 +295,7 @@ fun AddWordScreenFilledPreview() {
     MaterialTheme {
         var originalWord by remember { mutableStateOf("Hello") }
         var translatedWord by remember { mutableStateOf("Привет") }
-        var exampleUsage by remember { mutableStateOf("Hello there! How are you?") }
+        val examples = remember { mutableStateListOf("Hello there! How are you?") }
 
         Scaffold(
             modifier = Modifier
@@ -258,14 +337,19 @@ fun AddWordScreenFilledPreview() {
                     label = "Перевод",
                     leadingIconVector = Icons.Filled.Translate,
                 )
-                WordInputTextField(
-                    value = exampleUsage,
-                    onValueChange = { exampleUsage = it },
-                    label = "Пример использования",
-                    isOptional = true,
-                    singleLine = false,
-                    minLines = 3
-                )
+                examples.forEachIndexed { index, example ->
+                    WordInputTextField(
+                        value = example,
+                        onValueChange = { examples[index] = it },
+                        label = "Пример использования ${index + 1}",
+                        isOptional = true,
+                        singleLine = false,
+                        minLines = 3
+                    )
+                }
+                IconButton(onClick = { examples.add("") }) {
+                    Icon(Icons.Default.Add, contentDescription = "Добавить пример")
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = { },

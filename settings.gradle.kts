@@ -36,6 +36,8 @@ include(
     ":core:navigation-api",
     ":core:navigation-compose",
     ":core:core-mvi",
-    ":feature:feature_hello"
+    ":feature:feature_hello",
+    ":core:database",
+    ":core:data"
 )
 

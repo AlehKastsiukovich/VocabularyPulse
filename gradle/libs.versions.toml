@@ -23,6 +23,9 @@ koin-bom = "4.1.1"
 koin-ksp = "2.1.0"
 koin-core = "4.1.0"
 viewmodel-compose = "2.9.4"
+room = "2.8.3"
+sqlite = "2.6.1"
+ksp = "<kotlinCompatibleKspVersion>"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -51,6 +54,13 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-cor
 koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-ksp" }
 koin-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin-core" }
 
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+[bundles]
+room-bundle = ["room-runtime", "room-compiler", "sqlite-bundled"]
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -61,3 +71,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 googleKsp = { id = "com.google.devtools.ksp", version.ref = "google-ksp" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+room = { id = "androidx.room", version.ref = "room" }

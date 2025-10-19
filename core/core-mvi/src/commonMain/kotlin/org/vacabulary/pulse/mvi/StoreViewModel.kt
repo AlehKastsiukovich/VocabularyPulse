@@ -62,8 +62,10 @@ abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
         val newState = _uiState.value
     }
 
-    protected suspend fun sendEffect(effect: E) {
-        _uiEffect.send(effect)
+    protected fun sendEffect(effect: E) {
+        storeScope.launch {
+            _uiEffect.send(effect)
+        }
     }
 
     protected fun reduceSync(
@@ -75,21 +77,20 @@ abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
 
     protected fun <R> reduceAsync(
         onLoading: ((currentState: S) -> S)? = null,
-        operation: suspend () -> Result<R>,
+        operation: suspend () -> R,
         onSuccess: (currentState: S, result: R) -> S,
         onError: ((currentState: S, error: Throwable) -> S)? = null
     ): Flow<Unit> = flow {
         onLoading?.let { reduceState(it) }
-        operation()
-            .onSuccess { result ->
-                reduceState { currentState -> onSuccess(currentState, result) }
-            }
-            .onFailure { error ->
-                onError?.let { reduceState { currentState -> it(currentState, error) } }
-                    ?: reduceState { currentState ->
-                        currentState
-                    }
-            }
+        try {
+            val result = operation()
+            reduceState { currentState -> onSuccess(currentState, result) }
+        } catch (throwable: Throwable) {
+            onError?.let { reduceState { currentState -> it(currentState, throwable) } }
+                ?: reduceState { currentState ->
+                    currentState
+                }
+        }
         emit(Unit)
     }
 }

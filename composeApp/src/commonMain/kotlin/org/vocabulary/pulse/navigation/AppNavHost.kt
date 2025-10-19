@@ -11,6 +11,7 @@ import org.vocabulary.pulse.feature.home.di.HomeDestination
 import org.vocabulary.pulse.navigation.api.AppRoute
 import org.vocabulary.pulse.navigation.api.DestinationRegistry
 import org.vocabulary.pulse.navigation.api.NavIntent
+import org.vocabulary.pulse.navigation.api.NavOptions
 import org.vocabulary.pulse.navigation.api.Navigator
 import org.vocabulary.pulse.navigation.compose.ComposeNavigator
 
@@ -35,7 +36,25 @@ fun AppNavHost(
                     )
                 }
                 is AddWordDestination -> composable(destination.route::class) { _ ->
-                    destination.Content(onNavigateBack = { navigator.back() })
+                    destination.Content(
+                        onNavigateBack = { navigator.back() },
+                        onNavigateToHome = {
+                            navigator.navigate(
+                                NavIntent.To(
+                                    route = HomeDestination.route,
+                                    options = NavOptions(
+                                        popUpTo = NavIntent.PopUpTo(
+                                            route = HomeDestination.route,
+                                            inclusive = true,
+                                            saveState = false
+                                        ),
+                                        singleTop = true,
+                                        restoreState = false
+                                    )
+                                )
+                            )
+                        }
+                    )
                 }
             }
         }
