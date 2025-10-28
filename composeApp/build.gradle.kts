@@ -31,6 +31,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
     
@@ -76,6 +77,8 @@ kotlin {
             implementation(projects.core.navigationApi)
             implementation(projects.feature.featureHome)
             implementation(projects.feature.featureAddWord)
+            implementation(projects.core.database)
+            implementation(projects.core.data)
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))

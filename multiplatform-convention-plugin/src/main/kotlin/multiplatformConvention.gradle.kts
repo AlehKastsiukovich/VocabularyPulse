@@ -21,7 +21,7 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+    jvm()
 
     listOf(
         iosX64(),
@@ -40,7 +40,6 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting
 
         commonMain.dependencies {
             implementation(compose.animation)
