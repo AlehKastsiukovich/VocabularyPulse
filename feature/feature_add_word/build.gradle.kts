@@ -12,6 +12,7 @@ room {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.common)
             implementation(projects.core.navigationApi)
             implementation(projects.core.coreMvi)
             implementation(projects.core.data)

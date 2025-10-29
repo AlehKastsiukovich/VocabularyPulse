@@ -3,7 +3,6 @@ package org.vacabulary.pulse.mvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -18,14 +17,16 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.vocabulary.pulse.core.common.dispatcher.AppDispatchers
 
 abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
     initialUiState: S,
-    private val middlewares: List<Middleware<S, I, E>> = emptyList()
+    private val middlewares: List<Middleware<S, I, E>> = emptyList(),
+    private val appDispatchers: AppDispatchers
 ) : ViewModel(), Store<S, I, E> {
 
     protected val storeScope: CoroutineScope =
-        CoroutineScope(viewModelScope.coroutineContext + SupervisorJob() + Dispatchers.Main.immediate)
+        CoroutineScope(viewModelScope.coroutineContext + SupervisorJob() + appDispatchers.mainImmediate)
 
     private val _uiState: MutableStateFlow<S> = MutableStateFlow(initialUiState)
     override val uiState: StateFlow<S> = _uiState.asStateFlow()

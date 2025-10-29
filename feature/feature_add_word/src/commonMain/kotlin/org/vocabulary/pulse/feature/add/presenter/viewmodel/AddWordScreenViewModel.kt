@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.flow
 import org.vacabulary.pulse.data.model.Word
 import org.vacabulary.pulse.data.repository.WordsContentRepository
 import org.vacabulary.pulse.mvi.StoreViewModel
+import org.vocabulary.pulse.core.common.dispatcher.AppDispatchers
 import org.vocabulary.pulse.feature.add.presenter.model.AddWordEffect
 import org.vocabulary.pulse.feature.add.presenter.model.AddWordIntent
 import org.vocabulary.pulse.feature.add.presenter.model.AddWordMiddleware
@@ -13,9 +14,11 @@ import org.vocabulary.pulse.feature.add.presenter.model.AddWordState
 internal class AddWordScreenViewModel(
     private val wordsContentRepository: WordsContentRepository,
     middleware: AddWordMiddleware,
+    appDispatchers: AppDispatchers
 ): StoreViewModel<AddWordState, AddWordIntent, AddWordEffect>(
     initialUiState = AddWordState(),
-    middlewares = listOf(middleware)
+    middlewares = listOf(middleware),
+    appDispatchers = appDispatchers
 ) {
     override fun handleIntentAndReduce(intent: AddWordIntent): Flow<Unit> =
         when (intent) {

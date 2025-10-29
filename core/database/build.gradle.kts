@@ -11,6 +11,7 @@ room {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.common)
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
         }

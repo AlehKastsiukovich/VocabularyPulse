@@ -11,7 +11,7 @@ internal const val VOCA_PULSE_DATABASE_NAME = "voca_pulse_database.db"
 
 val databaseModule = module {
     single<RoomDatabaseProvider> {
-        RoomDatabaseProviderImpl(builder = get())
+        RoomDatabaseProviderImpl(builder = get(), appDispatchers = get())
     }
     single<VocaPulseDatabase> {
         get<RoomDatabaseProvider>().provideRoomDatabase()

@@ -79,6 +79,7 @@ kotlin {
             implementation(projects.feature.featureAddWord)
             implementation(projects.core.database)
             implementation(projects.core.data)
+            implementation(projects.core.common)
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))
