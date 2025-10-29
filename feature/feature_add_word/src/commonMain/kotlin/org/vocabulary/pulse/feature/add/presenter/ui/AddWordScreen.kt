@@ -41,6 +41,8 @@ import androidx.compose.ui.Alignment
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -62,14 +64,20 @@ internal fun AddWordScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val focusManager = LocalFocusManager.current
+
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
-                is AddWordEffect.NavigateBack -> onNavigateBack()
-                is AddWordEffect.NavigateToHome -> onNavigateToHome()
-                is AddWordEffect.Error -> {
-                    // TODO: Show error snackbar or toast
+                is AddWordEffect.NavigateBack -> {
+                    focusManager.clearFocus()
+                    onNavigateBack()
                 }
+                is AddWordEffect.NavigateToHome -> {
+                    focusManager.clearFocus()
+                    onNavigateToHome()
+                }
+                is AddWordEffect.Error -> {}
             }
         }
     }
@@ -247,11 +255,16 @@ private fun WordInputTextField(
     enabled: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    focusRequester: FocusRequester? = null
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .let { modifier ->
+                focusRequester?.let { modifier.focusRequester(it) } ?: modifier
+            },
         label = { Text(if (isOptional) "$label (опционально)" else label) },
         leadingIcon = leadingIconVector?.let {
             { Icon(imageVector = it, contentDescription = null) }
