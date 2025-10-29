@@ -6,6 +6,7 @@ import org.koin.compose.KoinMultiplatformApplication
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.Module
 import org.koin.dsl.KoinConfiguration
+import org.vacabulary.pulse.core.common.di.coreCommonModule
 import org.vacabulary.pulse.data.di.dataModule
 import org.vacabulary.pulse.database.di.databaseModule
 import org.vacabulary.pulse.database.di.databasePlatformModule
@@ -31,5 +32,6 @@ private fun provideAllModules(): List<Module> = listOf(
     databaseModule,
     dataModule,
     homeScreenModule,
-    addWordScreenModule
+    addWordScreenModule,
+    coreCommonModule
 )

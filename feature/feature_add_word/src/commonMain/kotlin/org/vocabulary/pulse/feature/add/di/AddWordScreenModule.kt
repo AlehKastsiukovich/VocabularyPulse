@@ -9,7 +9,8 @@ val addWordScreenModule = module {
     viewModel {
         AddWordScreenViewModel(
             wordsContentRepository = get(),
-            middleware = get()
+            middleware = get(),
+            appDispatchers = get()
         )
     }
     single { AddWordGraphContributor() }

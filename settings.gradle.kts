@@ -38,6 +38,7 @@ include(
     ":core:core-mvi",
     ":feature:feature_hello",
     ":core:database",
-    ":core:data"
+    ":core:data",
+    ":core:common"
 )
 
