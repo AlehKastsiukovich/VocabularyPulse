@@ -12,6 +12,7 @@ import org.vacabulary.pulse.database.di.databaseModule
 import org.vacabulary.pulse.database.di.databasePlatformModule
 import org.vocabulary.pulse.App
 import org.vocabulary.pulse.feature.add.di.addWordScreenModule
+import org.vocabulary.pulse.feature.card.di.cardModule
 import org.vocabulary.pulse.feature.home.di.homeScreenModule
 
 @OptIn(KoinExperimentalAPI::class)
@@ -33,5 +34,6 @@ private fun provideAllModules(): List<Module> = listOf(
     dataModule,
     homeScreenModule,
     addWordScreenModule,
-    coreCommonModule
+    coreCommonModule,
+    cardModule
 )
