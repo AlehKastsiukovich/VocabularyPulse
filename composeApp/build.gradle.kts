@@ -80,6 +80,7 @@ kotlin {
             implementation(projects.core.database)
             implementation(projects.core.data)
             implementation(projects.core.common)
+            implementation(projects.feature.featureCard)
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))

@@ -39,6 +39,7 @@ include(
     ":feature:feature_hello",
     ":core:database",
     ":core:data",
-    ":core:common"
+    ":core:common",
+    ":feature:feature_card"
 )
 

@@ -7,6 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.vocabulary.pulse.feature.add.di.AddWordDestination
 import org.vocabulary.pulse.feature.add.di.AddWordRoute
+import org.vocabulary.pulse.feature.card.di.CardDestination
+import org.vocabulary.pulse.feature.card.di.CardRoute
 import org.vocabulary.pulse.feature.home.di.HomeDestination
 import org.vocabulary.pulse.navigation.api.AppRoute
 import org.vocabulary.pulse.navigation.api.DestinationRegistry
@@ -31,7 +33,7 @@ fun AppNavHost(
             when(destination) {
                 is HomeDestination -> composable(destination.route::class) { _ ->
                     destination.Content(
-                        onStartTraining = { },
+                        onStartTraining = { navigator.navigate(NavIntent.To(CardRoute)) },
                         onAddWord = { navigator.navigate(NavIntent.To(AddWordRoute)) }
                     )
                 }
@@ -54,6 +56,11 @@ fun AppNavHost(
                                 )
                             )
                         }
+                    )
+                }
+                is CardDestination -> composable(destination.route::class) {
+                    destination.Content(
+                        onNavigateBack = { navigator.back() }
                     )
                 }
             }
