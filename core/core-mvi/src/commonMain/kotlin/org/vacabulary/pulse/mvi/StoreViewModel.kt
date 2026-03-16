@@ -2,8 +2,8 @@ package org.vacabulary.pulse.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -22,11 +20,11 @@ import org.vocabulary.pulse.core.common.dispatcher.AppDispatchers
 abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
     initialUiState: S,
     private val middlewares: List<Middleware<S, I, E>> = emptyList(),
-    private val appDispatchers: AppDispatchers
+    appDispatchers: AppDispatchers
 ) : ViewModel(), Store<S, I, E> {
 
     protected val storeScope: CoroutineScope =
-        CoroutineScope(viewModelScope.coroutineContext + SupervisorJob() + appDispatchers.mainImmediate)
+        CoroutineScope(viewModelScope.coroutineContext + appDispatchers.mainImmediate)
 
     private val _uiState: MutableStateFlow<S> = MutableStateFlow(initialUiState)
     override val uiState: StateFlow<S> = _uiState.asStateFlow()
@@ -45,9 +43,7 @@ abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
                     for (middleware in middlewares) {
                         currentIntent = middleware.processIntent(currentIntent) { _uiState.value }
                     }
-                }
-                .flatMapMerge(concurrency = Int.MAX_VALUE) { intent ->
-                    handleIntentAndReduce(intent)
+                    handleIntentAndReduce(currentIntent)
                 }
                 .collect()
         }
@@ -55,12 +51,10 @@ abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
 
     override fun dispatchIntent(intent: I): Boolean = intentsToProcessFlow.tryEmit(intent)
 
-    protected abstract fun handleIntentAndReduce(intent: I): Flow<Unit>
+    protected abstract fun handleIntentAndReduce(intent: I)
 
     protected fun reduceState(reducer: (currentState: S) -> S) {
-        val oldState = _uiState.value
         _uiState.update(reducer)
-        val newState = _uiState.value
     }
 
     protected fun sendEffect(effect: E) {
@@ -69,29 +63,27 @@ abstract class StoreViewModel<S : UiState, I : UiIntent, E : UiEffect>(
         }
     }
 
-    protected fun reduceSync(
-        processor: S.() -> S
-    ): Flow<Unit> = flow {
-        reduceState(processor)
-        emit(Unit)
-    }
+    protected fun reduceSync(processor: S.() -> S) = reduceState(processor)
 
     protected fun <R> reduceAsync(
         onLoading: ((currentState: S) -> S)? = null,
         operation: suspend () -> R,
         onSuccess: (currentState: S, result: R) -> S,
         onError: ((currentState: S, error: Throwable) -> S)? = null
-    ): Flow<Unit> = flow {
-        onLoading?.let { reduceState(it) }
-        try {
-            val result = operation()
-            reduceState { currentState -> onSuccess(currentState, result) }
-        } catch (throwable: Throwable) {
-            onError?.let { reduceState { currentState -> it(currentState, throwable) } }
-                ?: reduceState { currentState ->
-                    currentState
-                }
+    ) {
+        storeScope.launch {
+            onLoading?.let { reduceState(it) }
+            try {
+                val result = operation()
+                reduceState { currentState -> onSuccess(currentState, result) }
+            } catch (cancellationException: CancellationException) {
+                throw cancellationException
+            } catch (throwable: Throwable) {
+                onError?.let { reduceState { currentState -> it(currentState, throwable) } }
+                    ?: reduceState { sameState ->
+                        sameState
+                    }
+            }
         }
-        emit(Unit)
     }
 }
