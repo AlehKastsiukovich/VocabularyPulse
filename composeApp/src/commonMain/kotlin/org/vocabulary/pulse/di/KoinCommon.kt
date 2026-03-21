@@ -14,6 +14,7 @@ import org.vocabulary.pulse.App
 import org.vocabulary.pulse.feature.add.di.addWordScreenModule
 import org.vocabulary.pulse.feature.card.di.cardModule
 import org.vocabulary.pulse.feature.home.di.homeScreenModule
+import org.vocabulary.pulse.navigation.appNavigationModule
 
 @OptIn(KoinExperimentalAPI::class)
 @Preview
@@ -32,6 +33,7 @@ private fun provideAllModules(): List<Module> = listOf(
     databasePlatformModule,
     databaseModule,
     dataModule,
+    appNavigationModule,
     homeScreenModule,
     addWordScreenModule,
     coreCommonModule,

@@ -16,25 +16,25 @@ class ComposeNavigator(
                     launchSingleTop = options.singleTop
                     restoreState = options.restoreState
                     options.popUpTo?.let { pop ->
-                        popUpTo(pop.route) {
+                        popUpTo(pop.route.path) {
                             inclusive = pop.inclusive
                             saveState = pop.saveState
                         }
                     }
                 }
-                controller.navigate(navIntent.route, builder)
+                controller.navigate(navIntent.route.path, builder)
             }
             is NavIntent.Replace -> {
-                controller.navigate(navIntent.route) {
+                controller.navigate(navIntent.route.path) {
                     popUpTo(controller.graph.startDestinationId) { inclusive = false }
                     launchSingleTop = true
                 }
             }
             is NavIntent.PopUpTo -> {
-                controller.popBackStack(navIntent.route, navIntent.inclusive)
+                controller.popBackStack(navIntent.route.path, navIntent.inclusive)
             }
             is NavIntent.NewRoot -> {
-                controller.navigate(navIntent.route) {
+                controller.navigate(navIntent.route.path) {
                     popUpTo(0) { inclusive = true }
                 }
             }

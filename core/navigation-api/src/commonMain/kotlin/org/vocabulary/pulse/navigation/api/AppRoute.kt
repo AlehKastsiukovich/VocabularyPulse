@@ -1,3 +1,5 @@
 package org.vocabulary.pulse.navigation.api
 
-interface AppRoute
+interface AppRoute {
+    val path: String
+}

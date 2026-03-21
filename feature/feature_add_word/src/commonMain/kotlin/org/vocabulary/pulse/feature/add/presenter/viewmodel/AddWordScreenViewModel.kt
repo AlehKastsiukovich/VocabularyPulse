@@ -1,7 +1,5 @@
 package org.vocabulary.pulse.feature.add.presenter.viewmodel
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.vacabulary.pulse.data.model.Word
 import org.vacabulary.pulse.data.repository.WordsContentRepository
 import org.vacabulary.pulse.mvi.StoreViewModel
@@ -20,7 +18,7 @@ internal class AddWordScreenViewModel(
     middlewares = listOf(middleware),
     appDispatchers = appDispatchers
 ) {
-    override fun handleIntentAndReduce(intent: AddWordIntent): Flow<Unit> =
+    override fun handleIntentAndReduce(intent: AddWordIntent) =
         when (intent) {
             is AddWordIntent.WordChanged -> reduceSync { copy(word = intent.word) }
             is AddWordIntent.ExampleChanged -> reduceSync { copy( examples = intent.example) }
@@ -45,10 +43,6 @@ internal class AddWordScreenViewModel(
                     currentState.copy(isLoading = false, error = error.message)
                 }
             )
-
-            AddWordIntent.BackClicked -> flow {
-                sendEffect(AddWordEffect.NavigateBack)
-                emit(Unit)
-            }
+            AddWordIntent.BackClicked -> sendEffect(AddWordEffect.NavigateBack)
         }
 }
