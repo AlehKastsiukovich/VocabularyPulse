@@ -1,6 +1,5 @@
 plugins {
     id("multiplatformConvention")
-    alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.googleKsp)
     alias(libs.plugins.room)
 }
@@ -14,6 +13,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.common)
             implementation(projects.core.navigationApi)
+            implementation(projects.core.navigationEntryApi)
             implementation(projects.core.coreMvi)
             implementation(projects.core.data)
             implementation(libs.koin.viewmodel)

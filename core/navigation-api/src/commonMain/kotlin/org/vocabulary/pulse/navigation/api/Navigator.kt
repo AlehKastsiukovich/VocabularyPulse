@@ -6,6 +6,53 @@ interface Navigator {
     fun back()
 }
 
+class NavigatorHolder : Navigator {
+    private var delegate: Navigator? = null
+    private val pendingCommands = mutableListOf<PendingCommand>()
+
+    fun attach(navigator: Navigator) {
+        delegate = navigator
+        pendingCommands.forEach { command ->
+            when (command) {
+                is PendingCommand.Navigate -> navigator.navigate(command.navIntent)
+                PendingCommand.Back -> navigator.back()
+            }
+        }
+        pendingCommands.clear()
+    }
+
+    fun detach(navigator: Navigator) {
+        if (delegate === navigator) {
+            delegate = null
+        }
+    }
+
+    override fun navigate(navIntent: NavIntent) {
+        val current = delegate
+        if (current == null) {
+            pendingCommands += PendingCommand.Navigate(navIntent)
+            return
+        }
+        current.navigate(navIntent)
+    }
+
+    override fun canGoBack(): Boolean = delegate?.canGoBack() ?: false
+
+    override fun back() {
+        val current = delegate
+        if (current == null) {
+            pendingCommands += PendingCommand.Back
+            return
+        }
+        current.back()
+    }
+
+    private sealed interface PendingCommand {
+        data class Navigate(val navIntent: NavIntent) : PendingCommand
+        object Back : PendingCommand
+    }
+}
+
 sealed interface NavIntent {
     data class To(
         val route: AppRoute,
@@ -24,19 +71,6 @@ sealed interface NavIntent {
     ) : NavIntent
 
     data class NewRoot(val route: AppRoute) : NavIntent
-}
-
-fun interface GraphContributor {
-    fun contribute(into: DestinationRegistry)
-}
-
-interface DestinationRegistry {
-    fun register(destination: Destination)
-    val destinations: Set<Destination>
-}
-
-interface Destination {
-    val route: AppRoute
 }
 
 data class NavOptions(

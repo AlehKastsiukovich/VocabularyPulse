@@ -34,6 +34,7 @@ include(
     ":feature:feature_home",
     ":feature:feature_add_word",
     ":core:navigation-api",
+    ":core:navigation-entry-api",
     ":core:navigation-compose",
     ":core:core-mvi",
     ":feature:feature_hello",
@@ -42,4 +43,3 @@ include(
     ":core:common",
     ":feature:feature_card"
 )
-

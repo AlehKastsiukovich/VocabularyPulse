@@ -6,6 +6,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.navigationApi)
+            implementation(projects.core.navigationEntryApi)
+            implementation(libs.jetbrains.compose.navigation)
         }
     }
 }
